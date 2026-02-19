@@ -40,13 +40,3 @@ It reflects production-grade practices including:
 ### 🎯 Purpose
 
 Built as a showcase of full-stack engineering capability, focusing not only on UI implementation but also on backend architecture, system design, and scalability considerations.
-
----
-
-لو عايز نسخة أقصر لـ GitHub short description (اللي بتتحط تحت اسم الريبو):
-
-> Production-ready fullstack SaaS boilerplate built with Next.js, NestJS, GraphQL, Prisma & Redis featuring RBAC, multi-tenancy, and scalable architecture.
-
----
-
-لو عايز كمان نخليه “أقوى” بصيغة تخلي Recruiter يحس إنك جاهز Mid/Senior Fullstack رسميًا، أظبطهولك version أقوى شوية 🔥
