@@ -1,8 +1,3 @@
-تمام 👌
-ده **Professional Description** تقدر تحطه في GitHub + CV + LinkedIn 👇
-
----
-
 ## 🚀 SaaS Starter — Production-Ready Fullstack Foundation
 
 A production-ready fullstack SaaS boilerplate built to simulate real-world enterprise architecture and scalability patterns.
