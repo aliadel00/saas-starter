@@ -1,8 +1,12 @@
 import Link from "next/link";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-zinc-50 font-sans dark:bg-zinc-950">
+    <div className="relative flex min-h-screen flex-col items-center justify-center gap-8 bg-zinc-50 font-sans dark:bg-zinc-950">
+      <div className="absolute right-4 top-4">
+        <ThemeToggle />
+      </div>
       <h1 className="text-3xl font-semibold text-zinc-900 dark:text-zinc-50">
         Fullstack Boilerplate
       </h1>

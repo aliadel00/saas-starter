@@ -33,7 +33,9 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(() =>
+    typeof window !== 'undefined' ? localStorage.getItem(AUTH_TOKEN_KEY) : null
+  );
   const client = useApolloClient();
   const router = useRouter();
 
@@ -43,20 +45,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
 
   useEffect(() => {
-    if (token && meError) {
+    if (meError) {
       localStorage.removeItem(AUTH_TOKEN_KEY);
-      setToken(null);
       client.clearStore();
     }
-  }, [token, meError, client]);
+  }, [meError, client]);
 
-  const user = data?.me ?? null;
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setToken(localStorage.getItem(AUTH_TOKEN_KEY));
-    }
-  }, []);
+  const user = meError ? null : (data?.me ?? null);
 
   const login = useCallback(
     (newToken: string) => {
@@ -69,13 +64,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const register = useCallback(
-    (newToken: string) => {
-      localStorage.setItem(AUTH_TOKEN_KEY, newToken);
-      setToken(newToken);
-      client.resetStore();
-      router.push('/dashboard');
+    () => {
+      router.push('/login');
     },
-    [client, router]
+    [router]
   );
 
   const logout = useCallback(() => {
@@ -85,7 +77,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push('/login');
   }, [client, router]);
 
-  const loading = meLoading && !!token;
+  const loading = !!token && (meLoading || (!user && !meError));
 
   const value: AuthContextValue = {
     user: token ? user : null,

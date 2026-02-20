@@ -1,6 +1,7 @@
 'use client';
 
 import { ProtectedRoute } from '@/components/protected-route';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { useAuth } from '@/hooks/use-auth';
 
 function DashboardContent() {
@@ -13,12 +14,15 @@ function DashboardContent() {
           <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
             Dashboard
           </h1>
-          <button
-            onClick={logout}
-            className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          >
-            Sign out
-          </button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              onClick={logout}
+              className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            >
+              Sign out
+            </button>
+          </div>
         </div>
       </header>
       <main className="mx-auto max-w-4xl px-6 py-12">
