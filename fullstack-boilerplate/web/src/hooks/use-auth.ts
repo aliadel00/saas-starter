@@ -10,7 +10,7 @@ export function useAuth() {
   const [loginMutation, { loading: loginLoading, error: loginError }] =
     useMutation(LOGIN_MUTATION, {
       onCompleted: (data) => {
-        login(data.login.token);
+        login(data.login.token, data.login.user);
       },
     });
 
