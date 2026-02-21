@@ -13,9 +13,14 @@ import {
   useUpdateTask,
   useSoftDeleteTask,
 } from '@/hooks/use-tasks';
+import { useAuthContext } from '@/providers/auth-provider';
 import type { Task, TaskStatus, UpdateTaskInput } from '@/types/task';
 
 export default function TasksPage() {
+  const { user } = useAuthContext();
+  const canDelete = user?.role === 'ADMIN';
+  const canChangeStatus = !!user;
+
   const {
     tasks,
     total,
@@ -26,6 +31,7 @@ export default function TasksPage() {
     input,
     setPage,
     setStatus,
+    refetch,
   } = useTasks();
 
   const { changeStatus, loading: statusLoading } = useChangeTaskStatus();
@@ -62,7 +68,8 @@ export default function TasksPage() {
     if (!deletingTask) return;
     await softDeleteTask(deletingTask.id);
     setDeletingTask(null);
-  }, [deletingTask, softDeleteTask]);
+    refetch();
+  }, [deletingTask, softDeleteTask, refetch]);
 
   return (
     <>
@@ -103,6 +110,8 @@ export default function TasksPage() {
         <TaskTable
           tasks={tasks}
           loading={loading}
+          canDelete={canDelete}
+          canChangeStatus={canChangeStatus}
           onEdit={setEditingTask}
           onDelete={handleDeleteClick}
           onStatusChange={handleStatusChange}
