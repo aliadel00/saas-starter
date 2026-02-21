@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useCallback } from 'react';
-import Link from 'next/link';
-import { TaskForm } from '@/components/tasks/task-form';
-import { useCreateTask } from '@/hooks/use-tasks';
-import type { CreateTaskInput } from '@/types/task';
+import { useCallback } from "react";
+import Link from "next/link";
+import { TaskForm } from "@/components/tasks/task-form";
+import { useCreateTask } from "@/hooks/use-tasks";
+import type { CreateTaskInput } from "@/types/task";
 
 export default function CreateTaskPage() {
   const { createTask, loading, error } = useCreateTask();
@@ -23,8 +23,18 @@ export default function CreateTaskPage() {
           href="/tasks"
           className="inline-flex items-center gap-1 text-sm text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
         >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <svg
+            className="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
           Back to Tasks
         </Link>

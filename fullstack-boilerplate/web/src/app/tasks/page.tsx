@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import { useCallback, useState } from 'react';
-import Link from 'next/link';
-import { TaskTable } from '@/components/tasks/task-table';
-import { TaskFilters } from '@/components/tasks/task-filters';
-import { TaskPagination } from '@/components/tasks/task-pagination';
-import { TaskModal } from '@/components/tasks/task-modal';
-import { DeleteConfirmModal } from '@/components/tasks/delete-confirm-modal';
+import { useCallback, useState } from "react";
+import Link from "next/link";
+import { TaskTable } from "@/components/tasks/task-table";
+import { TaskFilters } from "@/components/tasks/task-filters";
+import { TaskPagination } from "@/components/tasks/task-pagination";
+import { TaskModal } from "@/components/tasks/task-modal";
+import { DeleteConfirmModal } from "@/components/tasks/delete-confirm-modal";
 import {
   useTasks,
   useChangeTaskStatus,
   useUpdateTask,
   useSoftDeleteTask,
-} from '@/hooks/use-tasks';
-import { useAuthContext } from '@/providers/auth-provider';
-import type { Task, TaskStatus, UpdateTaskInput } from '@/types/task';
+} from "@/hooks/use-tasks";
+import { useAuthContext } from "@/providers/auth-provider";
+import type { Task, TaskStatus, UpdateTaskInput } from "@/types/task";
 
 export default function TasksPage() {
   const { user } = useAuthContext();
-  const canDelete = user?.role === 'ADMIN';
+  const canDelete = user?.role === "ADMIN";
   const canChangeStatus = !!user;
 
   const {
@@ -86,8 +86,18 @@ export default function TasksPage() {
           href="/tasks/create"
           className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
         >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          <svg
+            className="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 4v16m8-8H4"
+            />
           </svg>
           New Task
         </Link>

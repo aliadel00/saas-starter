@@ -1,7 +1,7 @@
 export enum TaskStatus {
-  TODO = 'TODO',
-  IN_PROGRESS = 'IN_PROGRESS',
-  DONE = 'DONE',
+  TODO = "TODO",
+  IN_PROGRESS = "IN_PROGRESS",
+  DONE = "DONE",
 }
 
 export interface Task {
@@ -12,6 +12,7 @@ export interface Task {
   priority: number;
   dueDate: string | null;
   createdBy: string;
+  tenantId: string;
   createdAt: string;
   updatedAt: string;
 }

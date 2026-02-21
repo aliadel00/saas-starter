@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { LoginForm } from '@/components/login-form';
-import { ThemeToggle } from '@/components/theme-toggle';
-import { useAuth } from '@/hooks/use-auth';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { LoginForm } from "@/components/login-form";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function LoginPage() {
   const { user, loading } = useAuth();
@@ -12,7 +12,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!loading && user) {
-      router.replace('/dashboard');
+      router.replace("/dashboard");
     }
   }, [user, loading, router]);
 

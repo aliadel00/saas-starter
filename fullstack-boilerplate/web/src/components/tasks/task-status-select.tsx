@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { TaskStatus } from '@/types/task';
+import { TaskStatus } from "@/types/task";
 
 interface TaskStatusSelectProps {
   taskId: string;
@@ -10,9 +10,9 @@ interface TaskStatusSelectProps {
 }
 
 const STATUS_OPTIONS: { value: TaskStatus; label: string }[] = [
-  { value: TaskStatus.TODO, label: 'To Do' },
-  { value: TaskStatus.IN_PROGRESS, label: 'In Progress' },
-  { value: TaskStatus.DONE, label: 'Done' },
+  { value: TaskStatus.TODO, label: "To Do" },
+  { value: TaskStatus.IN_PROGRESS, label: "In Progress" },
+  { value: TaskStatus.DONE, label: "Done" },
 ];
 
 export function TaskStatusSelect({

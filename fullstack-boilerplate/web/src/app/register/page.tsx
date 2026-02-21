@@ -1,5 +1,5 @@
-import { RegisterForm } from '@/components/register-form';
-import { ThemeToggle } from '@/components/theme-toggle';
+import { RegisterForm } from "@/components/register-form";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function RegisterPage() {
   return (

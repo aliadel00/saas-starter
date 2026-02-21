@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useMutation } from '@apollo/client';
-import { useAuthContext } from '@/providers/auth-provider';
-import { LOGIN_MUTATION, REGISTER_MUTATION } from '@/graphql/mutations';
+import { useMutation } from "@apollo/client";
+import { useAuthContext } from "@/providers/auth-provider";
+import { LOGIN_MUTATION, REGISTER_MUTATION } from "@/graphql/mutations";
 
 export function useAuth() {
-  const { user, loading, login, register, logout } = useAuthContext();
+  const { user, tenant, loading, login, register, logout } = useAuthContext();
 
   const [loginMutation, { loading: loginLoading, error: loginError }] =
     useMutation(LOGIN_MUTATION, {
@@ -27,14 +27,19 @@ export function useAuth() {
     });
   };
 
-  const handleRegister = (email: string, password: string) => {
+  const handleRegister = (
+    email: string,
+    password: string,
+    tenantName?: string,
+  ) => {
     return registerMutation({
-      variables: { input: { email, password } },
+      variables: { input: { email, password, tenantName } },
     });
   };
 
   return {
     user,
+    tenant,
     loading,
     login: handleLogin,
     register: handleRegister,

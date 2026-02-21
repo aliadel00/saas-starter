@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useMutation, useQuery } from '@apollo/client';
-import { useCallback, useState } from 'react';
+import { useMutation, useQuery } from "@apollo/client";
+import { useCallback, useState } from "react";
 import {
   GET_TASKS,
   CREATE_TASK,
   UPDATE_TASK,
   CHANGE_TASK_STATUS,
   SOFT_DELETE_TASK,
-} from '@/graphql/tasks';
+} from "@/graphql/tasks";
 import type {
   Task,
   PaginatedTasks,
@@ -16,7 +16,7 @@ import type {
   CreateTaskInput,
   UpdateTaskInput,
   TaskStatus,
-} from '@/types/task';
+} from "@/types/task";
 
 export function useTasks(initialInput?: GetTasksInput) {
   const [input, setInput] = useState<GetTasksInput>({
@@ -29,7 +29,7 @@ export function useTasks(initialInput?: GetTasksInput) {
     getTasks: PaginatedTasks;
   }>(GET_TASKS, {
     variables: { input },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: "cache-and-network",
   });
 
   const setPage = useCallback((page: number) => {
@@ -63,8 +63,7 @@ export function useCreateTask() {
   });
 
   const execute = useCallback(
-    (input: CreateTaskInput) =>
-      createTask({ variables: { input } }),
+    (input: CreateTaskInput) => createTask({ variables: { input } }),
     [createTask],
   );
 
@@ -108,7 +107,8 @@ export function useChangeTaskStatus() {
         update: (cache, { data }) => {
           if (!data) return;
           cache.modify({
-            id: cache.identify(data.changeTaskStatus),
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            id: cache.identify(data.changeTaskStatus as any),
             fields: {
               status: () => newStatus,
             },

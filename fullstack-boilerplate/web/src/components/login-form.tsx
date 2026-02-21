@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useAuth } from '@/hooks/use-auth';
+import { useState } from "react";
+import Link from "next/link";
+import { useAuth } from "@/hooks/use-auth";
 
 export function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const { login, loginLoading, loginError } = useAuth();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -64,11 +64,11 @@ export function LoginForm() {
           disabled={loginLoading}
           className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
         >
-          {loginLoading ? 'Signing in...' : 'Sign in'}
+          {loginLoading ? "Signing in..." : "Sign in"}
         </button>
       </form>
       <p className="mt-4 text-center text-sm text-zinc-600 dark:text-zinc-400">
-        Don&apos;t have an account?{' '}
+        Don&apos;t have an account?{" "}
         <Link
           href="/register"
           className="font-medium text-blue-600 hover:underline dark:text-blue-400"

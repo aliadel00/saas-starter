@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 interface TaskPaginationProps {
   page: number;
@@ -22,8 +22,8 @@ export function TaskPagination({
   return (
     <div className="flex items-center justify-between border-t border-zinc-200 px-2 py-3 dark:border-zinc-700">
       <p className="text-sm text-zinc-600 dark:text-zinc-400">
-        Showing <span className="font-medium">{start}</span> to{' '}
-        <span className="font-medium">{end}</span> of{' '}
+        Showing <span className="font-medium">{start}</span> to{" "}
+        <span className="font-medium">{end}</span> of{" "}
         <span className="font-medium">{total}</span> tasks
       </p>
       <div className="flex items-center gap-2">
@@ -41,15 +41,15 @@ export function TaskPagination({
               if (p === 1 || p === totalPages) return true;
               return Math.abs(p - page) <= 1;
             })
-            .reduce<(number | '...')[]>((acc, p, idx, arr) => {
+            .reduce<(number | "...")[]>((acc, p, idx, arr) => {
               if (idx > 0 && p - (arr[idx - 1] as number) > 1) {
-                acc.push('...');
+                acc.push("...");
               }
               acc.push(p);
               return acc;
             }, [])
             .map((item, idx) =>
-              item === '...' ? (
+              item === "..." ? (
                 <span
                   key={`ellipsis-${idx}`}
                   className="px-1 text-sm text-zinc-400"
@@ -62,8 +62,8 @@ export function TaskPagination({
                   onClick={() => onPageChange(item as number)}
                   className={`min-w-[32px] rounded-lg px-2 py-1.5 text-sm font-medium transition-colors ${
                     item === page
-                      ? 'bg-blue-600 text-white'
-                      : 'text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800'
+                      ? "bg-blue-600 text-white"
+                      : "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
                   }`}
                 >
                   {item}

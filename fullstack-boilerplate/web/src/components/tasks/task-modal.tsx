@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useCallback, useEffect, useState } from 'react';
-import type { Task, UpdateTaskInput } from '@/types/task';
+import { useCallback, useEffect, useState } from "react";
+import type { Task, UpdateTaskInput } from "@/types/task";
 
 interface TaskModalProps {
   task: Task | null;
@@ -11,34 +11,40 @@ interface TaskModalProps {
   onSave: (id: string, input: UpdateTaskInput) => Promise<void>;
 }
 
-export function TaskModal({ task, open, loading, onClose, onSave }: TaskModalProps) {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+export function TaskModal({
+  task,
+  open,
+  loading,
+  onClose,
+  onSave,
+}: TaskModalProps) {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [priority, setPriority] = useState(3);
-  const [dueDate, setDueDate] = useState('');
-  const [error, setError] = useState('');
+  const [dueDate, setDueDate] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (task) {
       setTitle(task.title);
-      setDescription(task.description ?? '');
+      setDescription(task.description ?? "");
       setPriority(task.priority);
-      setDueDate(task.dueDate ? task.dueDate.split('T')[0] : '');
-      setError('');
+      setDueDate(task.dueDate ? task.dueDate.split("T")[0] : "");
+      setError("");
     }
   }, [task]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
-      setError('');
+      setError("");
 
       if (!title.trim()) {
-        setError('Title is required');
+        setError("Title is required");
         return;
       }
       if (priority < 1 || priority > 5) {
-        setError('Priority must be between 1 and 5');
+        setError("Priority must be between 1 and 5");
         return;
       }
       if (!task) return;
@@ -52,7 +58,7 @@ export function TaskModal({ task, open, loading, onClose, onSave }: TaskModalPro
         });
         onClose();
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to update task');
+        setError(err instanceof Error ? err.message : "Failed to update task");
       }
     },
     [task, title, description, priority, dueDate, onSave, onClose],
@@ -60,10 +66,10 @@ export function TaskModal({ task, open, loading, onClose, onSave }: TaskModalPro
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === "Escape") onClose();
     };
-    if (open) document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
+    if (open) document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
   }, [open, onClose]);
 
   if (!open || !task) return null;
@@ -83,15 +89,28 @@ export function TaskModal({ task, open, loading, onClose, onSave }: TaskModalPro
             onClick={onClose}
             className="rounded-lg p-1 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
           >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label htmlFor="edit-title" className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <label
+              htmlFor="edit-title"
+              className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+            >
               Title <span className="text-red-500">*</span>
             </label>
             <input
@@ -105,7 +124,10 @@ export function TaskModal({ task, open, loading, onClose, onSave }: TaskModalPro
           </div>
 
           <div>
-            <label htmlFor="edit-description" className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <label
+              htmlFor="edit-description"
+              className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+            >
               Description
             </label>
             <textarea
@@ -119,7 +141,10 @@ export function TaskModal({ task, open, loading, onClose, onSave }: TaskModalPro
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="edit-priority" className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              <label
+                htmlFor="edit-priority"
+                className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              >
                 Priority (1-5)
               </label>
               <input
@@ -133,7 +158,10 @@ export function TaskModal({ task, open, loading, onClose, onSave }: TaskModalPro
               />
             </div>
             <div>
-              <label htmlFor="edit-due-date" className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              <label
+                htmlFor="edit-due-date"
+                className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              >
                 Due Date
               </label>
               <input
@@ -163,7 +191,7 @@ export function TaskModal({ task, open, loading, onClose, onSave }: TaskModalPro
               disabled={loading}
               className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
             >
-              {loading ? 'Saving...' : 'Save Changes'}
+              {loading ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </form>

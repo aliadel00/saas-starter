@@ -1,20 +1,23 @@
-'use client';
+"use client";
 
-import { TaskStatus } from '@/types/task';
+import { TaskStatus } from "@/types/task";
 
 interface TaskFiltersProps {
   currentStatus: TaskStatus | undefined;
   onStatusChange: (status: TaskStatus | undefined) => void;
 }
 
-const STATUS_OPTIONS: { value: TaskStatus | ''; label: string }[] = [
-  { value: '', label: 'All Tasks' },
-  { value: TaskStatus.TODO, label: 'To Do' },
-  { value: TaskStatus.IN_PROGRESS, label: 'In Progress' },
-  { value: TaskStatus.DONE, label: 'Done' },
+const STATUS_OPTIONS: { value: TaskStatus | ""; label: string }[] = [
+  { value: "", label: "All Tasks" },
+  { value: TaskStatus.TODO, label: "To Do" },
+  { value: TaskStatus.IN_PROGRESS, label: "In Progress" },
+  { value: TaskStatus.DONE, label: "Done" },
 ];
 
-export function TaskFilters({ currentStatus, onStatusChange }: TaskFiltersProps) {
+export function TaskFilters({
+  currentStatus,
+  onStatusChange,
+}: TaskFiltersProps) {
   return (
     <div className="flex items-center gap-3">
       <label
@@ -25,7 +28,7 @@ export function TaskFilters({ currentStatus, onStatusChange }: TaskFiltersProps)
       </label>
       <select
         id="status-filter"
-        value={currentStatus ?? ''}
+        value={currentStatus ?? ""}
         onChange={(e) =>
           onStatusChange(
             e.target.value ? (e.target.value as TaskStatus) : undefined,
