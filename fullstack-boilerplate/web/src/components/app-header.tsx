@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { NotificationPopover } from "@/components/notifications/notification-popover";
 import { useAuth } from "@/hooks/use-auth";
 
 export function AppHeader() {
@@ -47,6 +48,7 @@ export function AppHeader() {
               {tenant.name}
             </span>
           )}
+          <NotificationPopover />
           <ThemeToggle />
           <button
             onClick={logout}

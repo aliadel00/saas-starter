@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery } from "@apollo/client";
 import { useCallback, useState } from "react";
+import toast from "react-hot-toast";
 import {
   GET_TASKS,
   CREATE_TASK,
@@ -9,6 +10,7 @@ import {
   CHANGE_TASK_STATUS,
   SOFT_DELETE_TASK,
 } from "@/graphql/tasks";
+import { GET_NOTIFICATIONS, GET_UNREAD_COUNT } from "@/graphql/notifications";
 import type {
   Task,
   PaginatedTasks,
@@ -59,7 +61,17 @@ export function useCreateTask() {
     { createTask: Task },
     { input: CreateTaskInput }
   >(CREATE_TASK, {
-    refetchQueries: [{ query: GET_TASKS }],
+    refetchQueries: [
+      { query: GET_TASKS },
+      { query: GET_NOTIFICATIONS },
+      { query: GET_UNREAD_COUNT },
+    ],
+    onCompleted: (data) => {
+      toast.success(`Task "${data.createTask.title}" created`);
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
   });
 
   const execute = useCallback(
@@ -91,7 +103,22 @@ export function useChangeTaskStatus() {
   const [changeStatus, { loading, error }] = useMutation<
     { changeTaskStatus: Task },
     { id: string; input: { status: TaskStatus } }
-  >(CHANGE_TASK_STATUS);
+  >(CHANGE_TASK_STATUS, {
+    refetchQueries: [{ query: GET_NOTIFICATIONS }, { query: GET_UNREAD_COUNT }],
+    onCompleted: (data) => {
+      const task = data.changeTaskStatus;
+      const labels: Record<string, string> = {
+        TODO: "To Do",
+        IN_PROGRESS: "In Progress",
+        DONE: "Done",
+      };
+      const label = labels[task.status] ?? task.status;
+      toast.success(`Task "${task.title}" moved to ${label}`);
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
 
   const execute = useCallback(
     (id: string, currentTask: Task, newStatus: TaskStatus) =>
