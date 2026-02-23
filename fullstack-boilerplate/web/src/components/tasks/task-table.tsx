@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import type { Task, TaskStatus } from "@/types/task";
 import { TaskStatusBadge } from "./task-status-badge";
 import { TaskPriorityIndicator } from "./task-priority-indicator";
@@ -46,6 +47,7 @@ export function TaskTable({
   onStatusChange,
   statusChangeLoading,
 }: TaskTableProps) {
+  const router = useRouter();
   if (loading && tasks.length === 0) {
     return (
       <div className="flex items-center justify-center py-16">
@@ -106,7 +108,8 @@ export function TaskTable({
           {tasks.map((task) => (
             <tr
               key={task.id}
-              className="transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+              onClick={() => router.push(`/tasks/${task.id}`)}
+              className="cursor-pointer transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
             >
               <td className="px-4 py-3">
                 <div>
@@ -120,7 +123,7 @@ export function TaskTable({
                   )}
                 </div>
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                 <div className="flex flex-col gap-1.5">
                   <TaskStatusBadge status={task.status} />
                   {canChangeStatus && task.status !== "DONE" && (
@@ -152,7 +155,7 @@ export function TaskTable({
               <td className="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-400">
                 {formatDate(task.createdAt)}
               </td>
-              <td className="px-4 py-3">
+              <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                 <div className="flex items-center justify-end gap-1">
                   <button
                     onClick={() => onEdit(task)}

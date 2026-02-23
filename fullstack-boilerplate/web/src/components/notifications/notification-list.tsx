@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import type { Notification, NotificationType } from "@/types/notification";
 import { useMarkNotificationAsRead } from "@/hooks/use-notifications";
 import { useAuth } from "@/hooks/use-auth";
@@ -27,16 +28,24 @@ function escapeRegex(str: string): string {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+interface ResolvedBody {
+  main: string;
+  changes: string[];
+}
+
 function resolveBody(
   body: string,
   actorEmail: string | null,
   currentUserEmail: string | undefined,
-): string {
-  if (!actorEmail || !currentUserEmail) return body;
-  if (actorEmail === currentUserEmail) {
-    return body.replace(new RegExp(`by ${escapeRegex(actorEmail)}`, "gi"), "by you");
+): ResolvedBody {
+  let resolved = body;
+  if (actorEmail && currentUserEmail && actorEmail === currentUserEmail) {
+    resolved = body.replace(new RegExp(`by ${escapeRegex(actorEmail)}`, "gi"), "by you");
   }
-  return body;
+
+  const [main, changesPart] = resolved.split(" — ");
+  const changes = changesPart ? changesPart.split(", ") : [];
+  return { main, changes };
 }
 
 function resolveActorLabel(
@@ -72,6 +81,7 @@ export function NotificationList({
 }: NotificationListProps) {
   const { markAsRead } = useMarkNotificationAsRead();
   const { user } = useAuth();
+  const router = useRouter();
 
   if (loading && notifications.length === 0) {
     return (
@@ -109,10 +119,15 @@ export function NotificationList({
         return (
           <li
             key={n.id}
+            onClick={() => {
+              if (n.taskId) router.push(`/tasks/${n.taskId}`);
+            }}
             className={`flex items-start gap-3 px-4 py-3 transition-colors ${
+              n.taskId ? "cursor-pointer" : ""
+            } ${
               !n.read
-                ? "bg-blue-50/50 dark:bg-blue-900/10"
-                : "bg-white dark:bg-zinc-900"
+                ? "bg-blue-50/50 hover:bg-blue-100/50 dark:bg-blue-900/10 dark:hover:bg-blue-900/20"
+                : "bg-white hover:bg-zinc-50 dark:bg-zinc-900 dark:hover:bg-zinc-800/50"
             }`}
           >
             <div className="flex-1 min-w-0">
@@ -132,9 +147,21 @@ export function NotificationList({
               <p className="mt-1 text-sm font-medium text-zinc-900 dark:text-zinc-100">
                 {n.title}
               </p>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                {resolveBody(n.body, n.actorEmail, user?.email)}
-              </p>
+              {(() => {
+                const { main, changes } = resolveBody(n.body, n.actorEmail, user?.email);
+                return (
+                  <>
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400">{main}</p>
+                    {changes.length > 0 && (
+                      <ul className="mt-1 list-disc pl-4 text-xs text-zinc-500 dark:text-zinc-400">
+                        {changes.map((c, i) => (
+                          <li key={i} className="py-0.5">{c}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </>
+                );
+              })()}
               {n.actorEmail && (
                 <p className="mt-0.5 text-xs text-zinc-400 dark:text-zinc-500">
                   By {resolveActorLabel(n.actorEmail, user?.email)}
@@ -143,7 +170,10 @@ export function NotificationList({
             </div>
             {!n.read && (
               <button
-                onClick={() => markAsRead(n.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  markAsRead(n.id);
+                }}
                 className="shrink-0 rounded-md px-2 py-1 text-xs text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
               >
                 Mark read

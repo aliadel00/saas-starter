@@ -5,6 +5,7 @@ import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import {
   GET_TASKS,
+  GET_TASK_BY_ID,
   CREATE_TASK,
   UPDATE_TASK,
   CHANGE_TASK_STATUS,
@@ -19,6 +20,23 @@ import type {
   UpdateTaskInput,
   TaskStatus,
 } from "@/types/task";
+
+export function useTask(id: string) {
+  const { data, loading, error } = useQuery<{ getTaskById: Task }>(
+    GET_TASK_BY_ID,
+    {
+      variables: { id },
+      skip: !id,
+      fetchPolicy: "cache-and-network",
+    },
+  );
+
+  return {
+    task: data?.getTaskById ?? null,
+    loading,
+    error,
+  };
+}
 
 export function useTasks(initialInput?: GetTasksInput) {
   const [input, setInput] = useState<GetTasksInput>({

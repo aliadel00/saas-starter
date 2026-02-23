@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { Notification, NotificationType } from "@/types/notification";
 import {
   useNotifications,
@@ -66,15 +67,22 @@ function PopoverItem({
   onMarkRead: (id: string) => void;
   onClose: () => void;
 }) {
+  const router = useRouter();
   const dot = TYPE_COLORS[notification.type];
   const actor = resolveActorLabel(notification.actorEmail, currentUserEmail);
   const body = resolveBody(notification.body, notification.actorEmail, currentUserEmail);
 
   return (
     <div
+      onClick={() => {
+        if (notification.taskId) {
+          onClose();
+          router.push(`/tasks/${notification.taskId}`);
+        }
+      }}
       className={`flex items-start gap-2.5 px-4 py-3 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50 ${
-        !notification.read ? "bg-blue-50/40 dark:bg-blue-900/10" : ""
-      }`}
+        notification.taskId ? "cursor-pointer" : ""
+      } ${!notification.read ? "bg-blue-50/40 dark:bg-blue-900/10" : ""}`}
     >
       <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${dot}`} />
       <div className="min-w-0 flex-1">
