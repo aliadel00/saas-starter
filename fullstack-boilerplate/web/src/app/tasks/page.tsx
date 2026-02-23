@@ -7,6 +7,7 @@ import { TaskFilters } from "@/components/tasks/task-filters";
 import { TaskPagination } from "@/components/tasks/task-pagination";
 import { TaskModal } from "@/components/tasks/task-modal";
 import { DeleteConfirmModal } from "@/components/tasks/delete-confirm-modal";
+import { UpgradePlanModal } from "@/components/upgrade-plan-modal";
 import {
   useTasks,
   useChangeTaskStatus,
@@ -17,9 +18,7 @@ import { useAuthContext } from "@/providers/auth-provider";
 import type { Task, TaskStatus, UpdateTaskInput } from "@/types/task";
 
 export default function TasksPage() {
-  const { user } = useAuthContext();
-  const canDelete = user?.role === "ADMIN";
-  const canChangeStatus = !!user;
+  const { permissions } = useAuthContext();
 
   const {
     tasks,
@@ -40,6 +39,7 @@ export default function TasksPage() {
 
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [deletingTask, setDeletingTask] = useState<Task | null>(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   const handleStatusChange = useCallback(
     (id: string, newStatus: TaskStatus) => {
@@ -82,30 +82,95 @@ export default function TasksPage() {
             Manage and track your team&apos;s work
           </p>
         </div>
-        <Link
-          href="/tasks/create"
-          className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
-        >
-          <svg
-            className="h-4 w-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
-          New Task
-        </Link>
+        <div className="flex items-center gap-3">
+          {permissions.taskLimitReached && (
+            <button
+              type="button"
+              onClick={() => setShowUpgradeModal(true)}
+              className="inline-flex items-center gap-2 rounded-lg border border-violet-300 bg-violet-50 px-4 py-2.5 text-sm font-medium text-violet-700 transition-colors hover:bg-violet-100 dark:border-violet-700 dark:bg-violet-900/20 dark:text-violet-300 dark:hover:bg-violet-900/40"
+            >
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                />
+              </svg>
+              Upgrade Plan
+            </button>
+          )}
+          {permissions.canCreateTask ? (
+            <Link
+              href="/tasks/create"
+              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+            >
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              New Task
+            </Link>
+          ) : (
+            <span
+              className="inline-flex cursor-not-allowed items-center gap-2 rounded-lg bg-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400"
+              title={
+                permissions.planExpired
+                  ? "Subscription expired"
+                  : "Task limit reached"
+              }
+            >
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              New Task
+            </span>
+          )}
+        </div>
       </div>
 
       {error && (
         <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
           {error.message}
+        </div>
+      )}
+
+      {permissions.planExpired && (
+        <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-400">
+          Your subscription has expired. Please upgrade to continue creating tasks and users.
+          {permissions.canChangePlan && (
+            <button
+              type="button"
+              onClick={() => setShowUpgradeModal(true)}
+              className="ml-2 font-semibold underline hover:no-underline"
+            >
+              Upgrade now
+            </button>
+          )}
         </div>
       )}
 
@@ -120,8 +185,8 @@ export default function TasksPage() {
         <TaskTable
           tasks={tasks}
           loading={loading}
-          canDelete={canDelete}
-          canChangeStatus={canChangeStatus}
+          canDelete={permissions.canDeleteTask}
+          canChangeStatus
           onEdit={setEditingTask}
           onDelete={handleDeleteClick}
           onStatusChange={handleStatusChange}
@@ -150,6 +215,11 @@ export default function TasksPage() {
         taskTitle={deletingTask?.title}
         onConfirm={handleDeleteConfirm}
         onCancel={() => setDeletingTask(null)}
+      />
+
+      <UpgradePlanModal
+        open={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
       />
     </>
   );

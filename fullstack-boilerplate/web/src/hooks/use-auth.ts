@@ -5,7 +5,17 @@ import { useAuthContext } from "@/providers/auth-provider";
 import { LOGIN_MUTATION, REGISTER_MUTATION } from "@/graphql/mutations";
 
 export function useAuth() {
-  const { user, tenant, loading, login, register, logout } = useAuthContext();
+  const {
+    user,
+    tenant,
+    usage,
+    permissions,
+    loading,
+    login,
+    register,
+    logout,
+    refreshUsage,
+  } = useAuthContext();
 
   const [loginMutation, { loading: loginLoading, error: loginError }] =
     useMutation(LOGIN_MUTATION, {
@@ -40,10 +50,13 @@ export function useAuth() {
   return {
     user,
     tenant,
+    usage,
+    permissions,
     loading,
     login: handleLogin,
     register: handleRegister,
     logout,
+    refreshUsage,
     loginLoading,
     registerLoading,
     loginError,

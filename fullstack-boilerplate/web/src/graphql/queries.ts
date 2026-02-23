@@ -18,7 +18,22 @@ export const MY_TENANT_QUERY = gql`
     myTenant {
       id
       name
+      plan
+      maxUsers
+      maxTasks
+      expiresAt
       createdAt
+    }
+  }
+`;
+
+export const TENANT_USAGE_QUERY = gql`
+  query TenantUsage {
+    tenantUsage {
+      userCount
+      taskCount
+      maxUsers
+      maxTasks
     }
   }
 `;

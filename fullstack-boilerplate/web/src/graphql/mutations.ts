@@ -31,3 +31,30 @@ export const REGISTER_MUTATION = gql`
     }
   }
 `;
+
+export const CHANGE_PLAN_MUTATION = gql`
+  mutation ChangePlan($input: ChangePlanInput!) {
+    changePlan(input: $input) {
+      id
+      name
+      plan
+      maxUsers
+      maxTasks
+      expiresAt
+      createdAt
+    }
+  }
+`;
+
+export const CREATE_USER_MUTATION = gql`
+  mutation CreateUser($input: CreateUserInput!) {
+    createUser(input: $input) {
+      id
+      email
+      role
+      tenantId
+      createdAt
+      updatedAt
+    }
+  }
+`;

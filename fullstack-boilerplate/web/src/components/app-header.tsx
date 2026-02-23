@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { NotificationPopover } from "@/components/notifications/notification-popover";
 import { useAuth } from "@/hooks/use-auth";
+import { SubscriptionBadge } from "@/components/subscription-badge";
+import { RoleBadge } from "@/components/role-badge";
 
 export function AppHeader() {
   const { user, tenant, logout } = useAuth();
@@ -39,14 +41,20 @@ export function AppHeader() {
         </nav>
         <div className="flex items-center gap-3">
           {user && (
-            <span className="text-sm text-zinc-500 dark:text-zinc-400">
-              {user.email}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-zinc-500 dark:text-zinc-400">
+                {user.email}
+              </span>
+              <RoleBadge role={user.role} />
+            </div>
           )}
           {tenant && (
-            <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-0.5 text-xs font-medium text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
-              {tenant.name}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-0.5 text-xs font-medium text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                {tenant.name}
+              </span>
+              <SubscriptionBadge plan={tenant.plan} />
+            </div>
           )}
           <NotificationPopover />
           <ThemeToggle />
