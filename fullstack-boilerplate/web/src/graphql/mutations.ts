@@ -58,3 +58,29 @@ export const CREATE_USER_MUTATION = gql`
     }
   }
 `;
+
+export const DELETE_TENANT_USER_MUTATION = gql`
+  mutation DeleteTenantUser($input: DeleteTenantUserInput!) {
+    deleteTenantUser(input: $input) {
+      id
+      email
+      role
+      tenantId
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const CHANGE_TENANT_USER_PASSWORD_MUTATION = gql`
+  mutation ChangeTenantUserPassword($input: ChangeTenantUserPasswordInput!) {
+    changeTenantUserPassword(input: $input) {
+      id
+      email
+      role
+      tenantId
+      createdAt
+      updatedAt
+    }
+  }
+`;

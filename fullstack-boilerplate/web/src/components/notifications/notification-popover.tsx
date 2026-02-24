@@ -16,6 +16,10 @@ const TYPE_COLORS: Record<NotificationType, string> = {
   TASK_CREATED: "bg-blue-500",
   TASK_COMPLETED: "bg-green-500",
   TASK_UPDATED: "bg-amber-500",
+  TASK_PRIORITY_CHANGED: "bg-violet-500",
+  USER_ADDED: "bg-indigo-500",
+  USER_DELETED: "bg-rose-500",
+  USER_PASSWORD_CHANGED: "bg-cyan-500",
 };
 
 function timeAgo(dateStr: string): string {
@@ -71,6 +75,10 @@ function PopoverItem({
   const dot = TYPE_COLORS[notification.type];
   const actor = resolveActorLabel(notification.actorEmail, currentUserEmail);
   const body = resolveBody(notification.body, notification.actorEmail, currentUserEmail);
+  const dashboardScopedType =
+    notification.type === "USER_ADDED" ||
+    notification.type === "USER_DELETED" ||
+    notification.type === "USER_PASSWORD_CHANGED";
 
   return (
     <div
@@ -78,10 +86,15 @@ function PopoverItem({
         if (notification.taskId) {
           onClose();
           router.push(`/tasks/${notification.taskId}`);
+          return;
+        }
+        if (dashboardScopedType) {
+          onClose();
+          router.push("/dashboard");
         }
       }}
       className={`flex items-start gap-2.5 px-4 py-3 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50 ${
-        notification.taskId ? "cursor-pointer" : ""
+        notification.taskId || dashboardScopedType ? "cursor-pointer" : ""
       } ${!notification.read ? "bg-blue-50/40 dark:bg-blue-900/10" : ""}`}
     >
       <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${dot}`} />

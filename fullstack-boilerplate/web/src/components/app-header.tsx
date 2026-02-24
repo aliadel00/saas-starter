@@ -15,6 +15,7 @@ export function AppHeader() {
   const navLinks = [
     { href: "/dashboard", label: "Dashboard" },
     { href: "/tasks", label: "Tasks" },
+    { href: "/members", label: "Admins & Members" },
   ];
 
   return (

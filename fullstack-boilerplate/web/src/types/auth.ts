@@ -35,3 +35,18 @@ export interface TenantUsage {
   maxUsers: number;
   maxTasks: number;
 }
+
+export interface CreateUserInput {
+  email: string;
+  password: string;
+  role?: Role;
+}
+
+export interface DeleteTenantUserInput {
+  userId: string;
+}
+
+export interface ChangeTenantUserPasswordInput {
+  userId: string;
+  newPassword: string;
+}

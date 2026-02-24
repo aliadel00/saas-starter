@@ -1,18 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { ProtectedRoute } from "@/components/protected-route";
 import { AppHeader } from "@/components/app-header";
 import { SubscriptionBadge } from "@/components/subscription-badge";
 import { RoleBadge } from "@/components/role-badge";
 import { UpgradePlanModal } from "@/components/upgrade-plan-modal";
+import { MembersSection } from "@/components/members/members-section";
 import { useAuth } from "@/hooks/use-auth";
 import { SubscriptionPlan, type Role } from "@/types/auth";
 
 function DashboardContent() {
   const { user, tenant, usage, permissions } = useAuth();
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const shouldOpenUpgrade = searchParams.get("upgrade");
+    if (shouldOpenUpgrade === "true" || shouldOpenUpgrade === "1") {
+      setShowUpgradeModal(true);
+    }
+  }, [searchParams]);
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
@@ -167,6 +177,14 @@ function DashboardContent() {
                 )}
             </div>
           )}
+        </div>
+
+        <div className="mt-6">
+          <MembersSection
+            title="Current Admins & Members"
+            description="See who has access and create new admins or members."
+            onUpgradeClick={() => setShowUpgradeModal(true)}
+          />
         </div>
       </main>
 

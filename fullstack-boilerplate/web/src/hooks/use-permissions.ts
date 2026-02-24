@@ -56,8 +56,9 @@ export function usePermissions(
     const isAdmin = isAdminOrAbove(user.role);
 
     return {
-      canCreateUser: isAdmin && !userLimitReached && !expired,
-      canDeleteUser: isOwner,
+      // Keep creation action available so backend can enforce limits and trigger alert emails.
+      canCreateUser: isAdmin && !expired,
+      canDeleteUser: isAdmin,
       canCreateTask: !taskLimitReached && !expired,
       canDeleteTask: isAdmin,
       canChangePlan: isOwner,

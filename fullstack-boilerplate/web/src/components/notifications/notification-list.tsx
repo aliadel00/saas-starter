@@ -18,6 +18,22 @@ const TYPE_STYLES: Record<NotificationType, { bg: string; text: string }> = {
     bg: "bg-amber-100 dark:bg-amber-900/30",
     text: "text-amber-700 dark:text-amber-300",
   },
+  TASK_PRIORITY_CHANGED: {
+    bg: "bg-violet-100 dark:bg-violet-900/30",
+    text: "text-violet-700 dark:text-violet-300",
+  },
+  USER_ADDED: {
+    bg: "bg-indigo-100 dark:bg-indigo-900/30",
+    text: "text-indigo-700 dark:text-indigo-300",
+  },
+  USER_DELETED: {
+    bg: "bg-rose-100 dark:bg-rose-900/30",
+    text: "text-rose-700 dark:text-rose-300",
+  },
+  USER_PASSWORD_CHANGED: {
+    bg: "bg-cyan-100 dark:bg-cyan-900/30",
+    text: "text-cyan-700 dark:text-cyan-300",
+  },
 };
 
 function formatLabel(type: NotificationType): string {
@@ -116,14 +132,19 @@ export function NotificationList({
     <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">
       {notifications.map((n) => {
         const style = TYPE_STYLES[n.type];
+        const dashboardScopedType =
+          n.type === "USER_ADDED" ||
+          n.type === "USER_DELETED" ||
+          n.type === "USER_PASSWORD_CHANGED";
         return (
           <li
             key={n.id}
             onClick={() => {
               if (n.taskId) router.push(`/tasks/${n.taskId}`);
+              if (!n.taskId && dashboardScopedType) router.push("/dashboard");
             }}
             className={`flex items-start gap-3 px-4 py-3 transition-colors ${
-              n.taskId ? "cursor-pointer" : ""
+              n.taskId || dashboardScopedType ? "cursor-pointer" : ""
             } ${
               !n.read
                 ? "bg-blue-50/50 hover:bg-blue-100/50 dark:bg-blue-900/10 dark:hover:bg-blue-900/20"

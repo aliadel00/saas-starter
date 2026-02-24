@@ -37,3 +37,16 @@ export const TENANT_USAGE_QUERY = gql`
     }
   }
 `;
+
+export const TENANT_USERS_QUERY = gql`
+  query TenantUsers {
+    tenantUsers {
+      id
+      email
+      role
+      tenantId
+      createdAt
+      updatedAt
+    }
+  }
+`;
