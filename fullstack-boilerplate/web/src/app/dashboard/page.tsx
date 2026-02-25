@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
 import { ProtectedRoute } from "@/components/protected-route";
 import { AppHeader } from "@/components/app-header";
 import { SubscriptionBadge } from "@/components/subscription-badge";
 import { RoleBadge } from "@/components/role-badge";
-import { UpgradePlanModal } from "@/components/upgrade-plan-modal";
 import { MembersSection } from "@/components/members/members-section";
+import { UpgradePlanModal } from "@/components/upgrade-plan-modal";
 import { useAuth } from "@/hooks/use-auth";
 import { SubscriptionPlan, type Role } from "@/types/auth";
 
@@ -16,13 +17,38 @@ function DashboardContent() {
   const { user, tenant, usage, permissions } = useAuth();
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const handledUpgradeSignalRef = useRef<string | null>(null);
+  const openFromQuery = searchParams.get("upgrade") === "true";
+  const modalOpen = showUpgradeModal || openFromQuery;
 
   useEffect(() => {
-    const shouldOpenUpgrade = searchParams.get("upgrade");
-    if (shouldOpenUpgrade === "true" || shouldOpenUpgrade === "1") {
-      setShowUpgradeModal(true);
+    if (!openFromQuery) return;
+
+    const source = searchParams.get("source");
+    const signal = `upgrade:true|source:${source ?? "none"}`;
+    if (handledUpgradeSignalRef.current === signal) return;
+
+    handledUpgradeSignalRef.current = signal;
+    if (source === "limit-users") {
+      toast.error("User limit reached. Upgrade your plan to continue.");
+    } else if (source === "limit-tasks") {
+      toast.error("Task limit reached. Upgrade your plan to continue.");
+    } else if (source === "plan-changed") {
+      toast.success("Your plan changed. Review billing details.");
     }
-  }, [searchParams]);
+  }, [openFromQuery, searchParams]);
+
+  const closeUpgradeModal = useCallback(() => {
+    setShowUpgradeModal(false);
+
+    if (!openFromQuery) return;
+    const nextParams = new URLSearchParams(searchParams.toString());
+    nextParams.delete("upgrade");
+    nextParams.delete("source");
+    const nextQuery = nextParams.toString();
+    router.replace(nextQuery ? `/dashboard?${nextQuery}` : "/dashboard");
+  }, [openFromQuery, router, searchParams]);
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
@@ -186,12 +212,11 @@ function DashboardContent() {
             onUpgradeClick={() => setShowUpgradeModal(true)}
           />
         </div>
+        <UpgradePlanModal
+          open={modalOpen}
+          onClose={closeUpgradeModal}
+        />
       </main>
-
-      <UpgradePlanModal
-        open={showUpgradeModal}
-        onClose={() => setShowUpgradeModal(false)}
-      />
     </div>
   );
 }

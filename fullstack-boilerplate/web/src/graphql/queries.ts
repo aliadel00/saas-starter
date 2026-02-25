@@ -19,6 +19,7 @@ export const MY_TENANT_QUERY = gql`
       id
       name
       plan
+      subscriptionStatus
       maxUsers
       maxTasks
       expiresAt

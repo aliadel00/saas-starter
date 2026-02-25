@@ -7,20 +7,23 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { NotificationPopover } from "@/components/notifications/notification-popover";
 import { useAuth } from "@/hooks/use-auth";
 import { SubscriptionBadge } from "@/components/subscription-badge";
+import { SubscriptionStatusBadge } from "@/components/subscription-status-badge";
 import { RoleBadge } from "@/components/role-badge";
-import type { Role, SubscriptionPlan } from "@/types/auth";
+import type { Role, SubscriptionPlan, SubscriptionStatus } from "@/types/auth";
 
 function AccountPopover({
   email,
   role,
   tenantName,
   tenantPlan,
+  tenantStatus,
   onLogout,
 }: {
   email: string;
   role: Role;
   tenantName?: string;
   tenantPlan?: SubscriptionPlan;
+  tenantStatus?: SubscriptionStatus;
   onLogout: () => void;
 }) {
   const [open, setOpen] = useState(false);
@@ -87,8 +90,9 @@ function AccountPopover({
                 Subscription
               </p>
               {tenantPlan ? (
-                <div>
+                <div className="flex flex-wrap items-center gap-2">
                   <SubscriptionBadge plan={tenantPlan} />
+                  {tenantStatus && <SubscriptionStatusBadge status={tenantStatus} />}
                 </div>
               ) : (
                 <p className="text-sm text-zinc-600 dark:text-zinc-300">No active plan</p>
@@ -133,9 +137,12 @@ export function AppHeader() {
     { href: "/dashboard", label: "Dashboard" },
     { href: "/tasks", label: "Tasks" },
     { href: "/members", label: "Admins & Members" },
+    { href: "/billing", label: "Billing" },
   ];
 
   useEffect(() => {
+    // Intentional UI reset on route change.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMobileNavOpen(false);
   }, [pathname]);
 
@@ -186,6 +193,7 @@ export function AppHeader() {
                 role={user.role}
                 tenantName={tenant?.name}
                 tenantPlan={tenant?.plan}
+                tenantStatus={tenant?.subscriptionStatus}
                 onLogout={logout}
               />
             )}

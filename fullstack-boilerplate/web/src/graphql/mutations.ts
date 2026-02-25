@@ -32,16 +32,10 @@ export const REGISTER_MUTATION = gql`
   }
 `;
 
-export const CHANGE_PLAN_MUTATION = gql`
-  mutation ChangePlan($input: ChangePlanInput!) {
-    changePlan(input: $input) {
-      id
-      name
-      plan
-      maxUsers
-      maxTasks
-      expiresAt
-      createdAt
+export const CREATE_CHECKOUT_SESSION_MUTATION = gql`
+  mutation CreateCheckoutSession($plan: SubscriptionPlan!) {
+    createCheckoutSession(plan: $plan) {
+      url
     }
   }
 `;

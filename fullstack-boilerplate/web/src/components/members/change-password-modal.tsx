@@ -24,6 +24,8 @@ export function ChangePasswordModal({
 
   useEffect(() => {
     if (open) {
+      // Reset form state every time the modal opens.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setError("");
       setNewPassword("");
     }

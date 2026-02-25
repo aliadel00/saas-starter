@@ -48,6 +48,8 @@ export function MembersSection({
   const canManageUsers = currentUserRole === Role.OWNER || currentUserRole === Role.ADMIN;
   const showMembersLimitState =
     canManageUsers && isMembersRoute && permissions.userLimitReached;
+  const subscriptionBlocked =
+    permissions.planExpired || permissions.subscriptionInactive;
 
   const canManageTargetUser = (targetRole: Role) => {
     if (currentUserRole === Role.OWNER) {
@@ -121,7 +123,7 @@ export function MembersSection({
     }
 
     if (isMembersRoute) {
-      router.push("/dashboard?upgrade=true");
+      router.push("/dashboard?upgrade=true&source=limit-users");
     }
   };
 
@@ -209,15 +211,26 @@ export function MembersSection({
                 </svg>
                 New Admin / Member
               </button>
+            ) : subscriptionBlocked && permissions.canChangePlan ? (
+              <button
+                type="button"
+                onClick={handleUpgrade}
+                className="inline-flex items-center gap-2 rounded-lg border border-violet-300 bg-violet-50 px-4 py-2.5 text-sm font-medium text-violet-700 transition-colors hover:bg-violet-100 dark:border-violet-700 dark:bg-violet-900/20 dark:text-violet-300 dark:hover:bg-violet-900/40"
+                title={
+                  permissions.planExpired
+                    ? "Subscription expired"
+                    : "Subscription inactive"
+                }
+              >
+                Fix Billing
+              </button>
             ) : (
               <span
                 className="inline-flex cursor-not-allowed items-center gap-2 rounded-lg bg-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400"
                 title={
-                  permissions.planExpired
-                    ? "Subscription expired"
-                    : permissions.userLimitReached
-                      ? "User limit reached"
-                      : "Only owners/admins can create users"
+                  permissions.userLimitReached
+                    ? "User limit reached"
+                    : "Only owners/admins can create users"
                 }
               >
                 New Admin / Member

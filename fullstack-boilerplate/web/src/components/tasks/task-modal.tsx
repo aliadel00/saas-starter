@@ -26,6 +26,8 @@ export function TaskModal({
 
   useEffect(() => {
     if (task) {
+      // Keep form fields in sync with the selected task.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTitle(task.title);
       setDescription(task.description ?? "");
       setPriority(task.priority);

@@ -12,6 +12,7 @@ function MembersContent() {
         <MembersSection
           title="Current Admins & Members"
           description="View everyone in your workspace and add new admins or members."
+          onUpgradeClick={() => window.location.assign("/billing")}
         />
       </main>
     </div>

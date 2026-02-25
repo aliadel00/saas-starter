@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { Role } from "@/types/auth";
+import { Role, SubscriptionStatus } from "@/types/auth";
 import type { User, Tenant, TenantUsage } from "@/types/auth";
 
 export interface Permissions {
@@ -15,6 +15,7 @@ export interface Permissions {
   taskLimitReached: boolean;
   userLimitReached: boolean;
   planExpired: boolean;
+  subscriptionInactive: boolean;
 }
 
 function isAdminOrAbove(role: Role): boolean {
@@ -39,12 +40,17 @@ export function usePermissions(
         taskLimitReached: false,
         userLimitReached: false,
         planExpired: false,
+        subscriptionInactive: false,
       };
     }
 
     const expired = tenant.expiresAt
       ? new Date(tenant.expiresAt) < new Date()
       : false;
+    const subscriptionActive =
+      tenant.subscriptionStatus === SubscriptionStatus.ACTIVE ||
+      tenant.subscriptionStatus === SubscriptionStatus.TRIALING;
+    const subscriptionInactive = !subscriptionActive;
 
     const taskLimitReached =
       tenant.maxTasks !== -1 && !!usage && usage.taskCount >= tenant.maxTasks;
@@ -57,9 +63,9 @@ export function usePermissions(
 
     return {
       // Keep creation action available so backend can enforce limits and trigger alert emails.
-      canCreateUser: isAdmin && !expired,
+      canCreateUser: isAdmin && !expired && subscriptionActive,
       canDeleteUser: isAdmin,
-      canCreateTask: !taskLimitReached && !expired,
+      canCreateTask: !taskLimitReached && !expired && subscriptionActive,
       canDeleteTask: isAdmin,
       canChangePlan: isOwner,
       isAdmin,
@@ -67,6 +73,7 @@ export function usePermissions(
       taskLimitReached,
       userLimitReached,
       planExpired: expired,
+      subscriptionInactive,
     };
   }, [user, tenant, usage]);
 }

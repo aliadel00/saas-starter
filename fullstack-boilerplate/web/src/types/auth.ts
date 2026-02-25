@@ -10,6 +10,16 @@ export enum SubscriptionPlan {
   ENTERPRISE = "ENTERPRISE",
 }
 
+export enum SubscriptionStatus {
+  ACTIVE = "ACTIVE",
+  TRIALING = "TRIALING",
+  PAST_DUE = "PAST_DUE",
+  CANCELED = "CANCELED",
+  INCOMPLETE = "INCOMPLETE",
+  INCOMPLETE_EXPIRED = "INCOMPLETE_EXPIRED",
+  UNPAID = "UNPAID",
+}
+
 export interface User {
   id: string;
   email: string;
@@ -23,6 +33,7 @@ export interface Tenant {
   id: string;
   name: string;
   plan: SubscriptionPlan;
+  subscriptionStatus: SubscriptionStatus;
   maxUsers: number;
   maxTasks: number;
   expiresAt: string | null;

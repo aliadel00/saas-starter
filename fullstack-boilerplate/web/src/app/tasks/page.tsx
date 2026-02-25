@@ -125,14 +125,36 @@ export default function TasksPage() {
               </svg>
               New Task
             </Link>
-          ) : (
-            <span
-              className="inline-flex cursor-not-allowed items-center gap-2 rounded-lg bg-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400"
+          ) : permissions.planExpired || permissions.subscriptionInactive ? (
+            <button
+              type="button"
+              onClick={() => setShowUpgradeModal(true)}
+              className="inline-flex items-center gap-2 rounded-lg border border-violet-300 bg-violet-50 px-4 py-2.5 text-sm font-medium text-violet-700 transition-colors hover:bg-violet-100 dark:border-violet-700 dark:bg-violet-900/20 dark:text-violet-300 dark:hover:bg-violet-900/40"
               title={
                 permissions.planExpired
                   ? "Subscription expired"
-                  : "Task limit reached"
+                  : "Subscription inactive"
               }
+            >
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                />
+              </svg>
+              Fix Billing
+            </button>
+          ) : (
+            <span
+              className="inline-flex cursor-not-allowed items-center gap-2 rounded-lg bg-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400"
+              title="Task limit reached"
             >
               <svg
                 className="h-4 w-4"
@@ -159,9 +181,9 @@ export default function TasksPage() {
         </div>
       )}
 
-      {permissions.planExpired && (
+      {(permissions.planExpired || permissions.subscriptionInactive) && (
         <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-400">
-          Your subscription has expired. Please upgrade to continue creating tasks and users.
+          Your subscription is not active. Please update billing to continue creating tasks and users.
           {permissions.canChangePlan && (
             <button
               type="button"
