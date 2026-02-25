@@ -27,9 +27,9 @@ function DashboardContent() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <AppHeader />
-      <main className="mx-auto max-w-6xl px-6 py-12">
+      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-10">
         <div className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+          <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm sm:p-8 dark:border-zinc-800 dark:bg-zinc-900">
             <h2 className="mb-4 text-lg font-medium text-zinc-900 dark:text-zinc-50">
               Welcome back
             </h2>
@@ -66,7 +66,7 @@ function DashboardContent() {
             <div className="mt-6">
               <Link
                 href="/tasks"
-                className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 sm:w-auto"
               >
                 <svg
                   className="h-4 w-4"
@@ -87,7 +87,7 @@ function DashboardContent() {
           </div>
 
           {tenant && (
-            <div className="rounded-xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+            <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm sm:p-8 dark:border-zinc-800 dark:bg-zinc-900">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-50">
                   Subscription

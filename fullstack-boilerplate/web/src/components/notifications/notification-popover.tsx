@@ -105,10 +105,10 @@ function PopoverItem({
         <p className="mt-0.5 line-clamp-2 text-xs text-zinc-500 dark:text-zinc-400">
           {body}
         </p>
-        <div className="mt-1 flex items-center gap-2 text-[11px] text-zinc-400 dark:text-zinc-500">
-          {actor && <span>{actor}</span>}
-          {actor && <span>&middot;</span>}
-          <span>{timeAgo(notification.createdAt)}</span>
+        <div className="mt-1 flex min-w-0 items-center gap-2 text-[11px] text-zinc-400 dark:text-zinc-500">
+          {actor && <span className="truncate">{actor}</span>}
+          {actor && <span className="shrink-0">&middot;</span>}
+          <span className="shrink-0">{timeAgo(notification.createdAt)}</span>
         </div>
       </div>
       {!notification.read && (
@@ -158,6 +158,15 @@ export function NotificationPopover() {
     return () => document.removeEventListener("keydown", onEsc);
   }, [open]);
 
+  useEffect(() => {
+    if (!open) return;
+    function onScroll() {
+      setOpen(false);
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [open]);
+
   return (
     <div ref={containerRef} className="relative">
       <button
@@ -188,7 +197,7 @@ export function NotificationPopover() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-96 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+        <div className="fixed left-0 right-0 top-14 z-50 w-full max-w-none overflow-hidden border border-zinc-200 bg-white shadow-lg md:absolute md:left-auto md:right-0 md:top-full md:mt-2 md:w-96 md:max-w-sm md:rounded-xl dark:border-zinc-700 dark:bg-zinc-900">
           <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3 dark:border-zinc-800">
             <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
               Notifications

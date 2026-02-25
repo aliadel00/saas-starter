@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { RoleBadge } from "@/components/role-badge";
 import { CreateUserModal } from "@/components/members/create-user-modal";
@@ -21,6 +22,10 @@ export function MembersSection({
   description = "Manage your team's access.",
   onUpgradeClick,
 }: MembersSectionProps) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const isMembersRoute =
+    pathname === "/members" || pathname.startsWith("/members/");
   const { user, permissions, refreshUsage } = useAuthContext();
   const {
     users,
@@ -41,6 +46,8 @@ export function MembersSection({
   const [deleteTarget, setDeleteTarget] = useState<User | null>(null);
   const currentUserRole = user?.role;
   const canManageUsers = currentUserRole === Role.OWNER || currentUserRole === Role.ADMIN;
+  const showMembersLimitState =
+    canManageUsers && isMembersRoute && permissions.userLimitReached;
 
   const canManageTargetUser = (targetRole: Role) => {
     if (currentUserRole === Role.OWNER) {
@@ -107,6 +114,17 @@ export function MembersSection({
     setPasswordTarget(null);
   };
 
+  const handleUpgrade = () => {
+    if (onUpgradeClick) {
+      onUpgradeClick();
+      return;
+    }
+
+    if (isMembersRoute) {
+      router.push("/dashboard?upgrade=true");
+    }
+  };
+
   return (
     <>
       <section className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
@@ -120,7 +138,57 @@ export function MembersSection({
             </p>
           </div>
           {canManageUsers &&
-            (permissions.canCreateUser ? (
+            (showMembersLimitState ? (
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  disabled
+                  className="inline-flex cursor-not-allowed items-center gap-2 rounded-lg bg-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400"
+                  title="User limit reached"
+                >
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  New Admin / Member
+                </button>
+                <button
+                  type="button"
+                  onClick={handleUpgrade}
+                  disabled={!permissions.canChangePlan}
+                  title={
+                    permissions.canChangePlan
+                      ? undefined
+                      : "Only owners can change plans"
+                  }
+                  className="inline-flex items-center gap-2 rounded-lg border border-violet-300 bg-violet-50 px-4 py-2.5 text-sm font-medium text-violet-700 transition-colors hover:bg-violet-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-violet-700 dark:bg-violet-900/20 dark:text-violet-300 dark:hover:bg-violet-900/40"
+                >
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                    />
+                  </svg>
+                  Upgrade Plan
+                </button>
+              </div>
+            ) : permissions.canCreateUser ? (
               <button
                 type="button"
                 onClick={() => setShowCreateModal(true)}
@@ -140,27 +208,6 @@ export function MembersSection({
                   />
                 </svg>
                 New Admin / Member
-              </button>
-            ) : permissions.userLimitReached && permissions.canChangePlan ? (
-              <button
-                type="button"
-                onClick={onUpgradeClick}
-                className="inline-flex items-center gap-2 rounded-lg border border-violet-300 bg-violet-50 px-4 py-2.5 text-sm font-medium text-violet-700 transition-colors hover:bg-violet-100 dark:border-violet-700 dark:bg-violet-900/20 dark:text-violet-300 dark:hover:bg-violet-900/40"
-              >
-                <svg
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                  />
-                </svg>
-                Upgrade Plan
               </button>
             ) : (
               <span
